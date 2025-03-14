@@ -1,16 +1,11 @@
 import express from "express";
+import { upload } from "../utils/cloudinary.js";
 
-import {
-  getUsers,
-  getMessages,
-  sendMessage,
-} from "../controllers/message.controller.js";
+import { getMessages, sendMessage } from "../controllers/message.controller.js";
 
 const router = express.Router();
 
-router.get("/users/:id", getUsers);
-
 router.get("/get/:from/:to", getMessages);
-router.post("/send/:from/:to", sendMessage);
+router.post("/send/:from/:to", upload.single("imageFile"), sendMessage);
 
 export default router;

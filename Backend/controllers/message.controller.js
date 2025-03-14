@@ -1,32 +1,7 @@
-import User from "../modals/user.modal.js";
 import Message from "../modals/message.modal.js";
 
 import memoryCache, { generateCacheKey } from "../utils/nodeCache.js";
-
-export const getUsers = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    // ! Check cache for users
-    const cacheKey = generateCacheKey("users", id);
-    if (memoryCache.has(cacheKey)) {
-      const userCache = memoryCache.get(cacheKey);
-      return res.status(200).json({ sucess: true, users: userCache });
-    }
-
-    // ? Fetch users except cur User
-    const users = await User.find({
-      _id: { $ne: id },
-    }).select("-password");
-
-    // ! Set cache for users
-    memoryCache.set(`users-${id}`, users);
-
-    return res.status(200).json({ sucess: true, users });
-  } catch (error) {
-    return res.status(500).json({ message: "Something went wrong" });
-  }
-};
+import { uploadCloudinary } from "../utils/cloudinary.js";
 
 export const getMessages = async (req, res) => {
   const { from, to } = req.params;
@@ -60,7 +35,7 @@ export const getMessages = async (req, res) => {
 
     return res.status(200).json({ success: true, messages });
   } catch (error) {
-    return res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -68,16 +43,24 @@ export const sendMessage = async (req, res) => {
   const { from, to } = req.params;
 
   try {
-    const { text, image } = req.body;
+    const { text } = req.body;
+    const image = req.file;
 
+    let imageURL = null;
     if (image) {
+      const b64 = Buffer.from(req.file?.buffer).toString("base64");
+      const url = `data:image/${req.file?.mimetype};base64,${b64}`;
+
+      // ! Upload to Cloudinary
+      const uploadResponse = await uploadCloudinary(url);
+      imageURL = uploadResponse?.secure_url;
     }
 
     const message = new Message({
       sender: from,
       receiver: to,
       text,
-      image,
+      image: imageURL,
     });
 
     // ! Save message
@@ -92,6 +75,6 @@ export const sendMessage = async (req, res) => {
 
     return res.status(200).json({ success: true, message });
   } catch (error) {
-    return res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: error.message });
   }
 };
