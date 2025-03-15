@@ -1,9 +1,7 @@
+import React, { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import React from "react";
 
-import { Toaster } from "react-hot-toast";
-
-import { NavBar, DotLoader } from "./components";
+import { NavBar, DotLoader, Authorization } from "./components";
 import {
   HomePage,
   SignUpPage,
@@ -11,19 +9,69 @@ import {
   SettingsPage,
   ProfilePage,
 } from "./pages";
+import { Toaster } from "react-hot-toast";
+
+import useAuthStore from "./store/useAuthStore";
+
 const App = () => {
+  const { user, isCheckingAuth, checkAuth } = useAuthStore();
+  const [appReady, setAppReady] = useState(false);
+
+  useEffect(() => {
+    checkAuth().finally(() => setAppReady(true));
+  }, [checkAuth]);
+
+  if (isCheckingAuth || !appReady) {
+    return <DotLoader />;
+  }
+
   return (
     <main>
       <NavBar />
 
       <Routes>
-        <Route path="/" element={<DotLoader />} />
+        <Route
+          path="/"
+          element={
+            <Authorization>
+              <HomePage />
+            </Authorization>
+          }
+        />
 
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/signup"
+          element={
+            <Authorization>
+              <SignUpPage />
+            </Authorization>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <Authorization>
+              <LoginPage />
+            </Authorization>
+          }
+        />
 
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route
+          path="/settings"
+          element={
+            <Authorization>
+              <SettingsPage />
+            </Authorization>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <Authorization>
+              <ProfilePage />
+            </Authorization>
+          }
+        />
       </Routes>
 
       <Toaster />

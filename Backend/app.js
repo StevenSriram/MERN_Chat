@@ -1,7 +1,9 @@
 import express from "express";
-import cookieParser from "cookie-parser";
 import { configEnv, configMorgan, configHelmet } from "../config.js";
 configEnv();
+
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import connectDB from "./db/configDB.js";
 
@@ -13,6 +15,13 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // * Middlewares
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(configHelmet());
 app.use(configMorgan());
 app.use(express.json());
