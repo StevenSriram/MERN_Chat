@@ -28,16 +28,15 @@ export const signUp = async (req, res) => {
     const token = generateJWT(res, user);
 
     user = { ...user._doc, password: undefined };
+
     return res.status(201).json({
-      sucess: true,
+      success: true,
       token,
       user,
       message: "User Created Successfully",
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ sucess: false, message: "Something went wrong" });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -64,13 +63,12 @@ export const login = async (req, res) => {
     const token = generateJWT(res, user);
 
     user = { ...user._doc, password: undefined };
+
     return res
       .status(200)
-      .json({ sucess: true, token, user, message: "Logged In Successfully" });
+      .json({ success: true, token, user, message: "Logged In Successfully" });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ sucess: false, message: "Something went wrong" });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -79,22 +77,26 @@ export const logout = async (req, res) => {
     // ? Clear JWT cookie
     res.clearCookie("jwt");
 
-    return res.status(200).json({ sucess: true, message: "Logout successful" });
-  } catch (error) {
     return res
-      .status(500)
-      .json({ sucess: false, message: "Something went wrong" });
+      .status(200)
+      .json({ success: true, message: "Logout successful" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export const checkAuth = async (req, res) => {
   try {
-    const user = req.user;
+    let user = req.user;
 
-    return res
-      .status(200)
-      .json({ sucess: true, user, message: "User is authenticated" });
+    user = { ...user, password: undefined };
+
+    return res.status(200).json({
+      success: true,
+      user,
+      message: "User is authenticated",
+    });
   } catch (error) {
-    return res.status(500).json({ message: "Something went wrong" });
+    return res.status(500).json({ message: error.message });
   }
 };
