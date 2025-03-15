@@ -20,8 +20,7 @@ const userSchema = new mongoose.Schema(
     },
     profile: {
       type: String,
-      default:
-        "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+      default: "",
     },
   },
   { timestamps: true }
