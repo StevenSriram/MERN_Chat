@@ -12,7 +12,7 @@ const verifyJWT = (req, res, next) => {
     }
 
     // ! add user to request
-    req.user = decoded.user;
+    req.userId = decoded.userId;
 
     next();
   } catch (error) {

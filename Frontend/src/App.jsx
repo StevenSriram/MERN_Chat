@@ -21,6 +21,8 @@ const App = () => {
     checkAuth().finally(() => setAppReady(true));
   }, [checkAuth]);
 
+  // * console.log(user);
+
   if (isCheckingAuth || !appReady) {
     return <DotLoader />;
   }

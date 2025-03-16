@@ -12,7 +12,7 @@ export const getChatUsers = async (req, res) => {
     const cacheKey = generateCacheKey("users", id);
     if (memoryCache.has(cacheKey)) {
       const userCache = memoryCache.get(cacheKey);
-      return res.status(200).json({ sucess: true, users: userCache });
+      return res.status(200).json({ success: true, users: userCache });
     }
 
     // ? Fetch users except cur User
@@ -23,7 +23,7 @@ export const getChatUsers = async (req, res) => {
     // ! Set cache for users
     memoryCache.set(cacheKey, users);
 
-    return res.status(200).json({ sucess: true, users });
+    return res.status(200).json({ success: true, users });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -36,22 +36,31 @@ export const uploadProfile = async (req, res) => {
     const user = await User.findById(id).select("-password");
 
     // ! Delete old profile
-    if (user.profile.includes("res.cloudinary.com")) {
+    if (user?.profile?.includes("res.cloudinary.com")) {
       await deleteProfile(user.profile);
     }
 
     // ? Upload new profile
     const b64 = Buffer.from(req.file?.buffer).toString("base64");
-    const url = `data:image/${req.file?.mimetype};base64,${b64}`;
+    const url = `data:${req.file?.mimetype};base64,${b64}`;
 
     // ! Upload to Cloudinary
     const uploadResponse = await uploadCloudinary(url);
 
-    // ! Save Updated user
-    user.profile = uploadResponse?.secure_url;
+    if (!uploadResponse || !uploadResponse.secure_url) {
+      return res.status(500).json({ message: "Image upload failed" });
+    }
+    // ! Update user profile
+    user.profile = uploadResponse.secure_url;
+
+    // ! Save user
     await user.save();
 
-    return res.status(200).json({ sucess: true, user });
+    memoryCache.del(id);
+
+    return res
+      .status(200)
+      .json({ success: true, user, message: "Profile Updated Successfully" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

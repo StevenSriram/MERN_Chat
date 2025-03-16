@@ -2,6 +2,7 @@ import User from "../modals/user.modal.js";
 import bcrypt from "bcrypt";
 
 import generateJWT from "../utils/generateJWT.js";
+import memoryCache from "../utils/nodeCache.js";
 
 export const signUp = async (req, res) => {
   try {
@@ -25,7 +26,7 @@ export const signUp = async (req, res) => {
     await user.save();
 
     // ? Generate JWT
-    const token = generateJWT(res, user);
+    const token = generateJWT(res, user._id);
 
     user = { ...user._doc, password: undefined };
 
@@ -60,7 +61,7 @@ export const login = async (req, res) => {
     }
 
     // ? Generate JWT
-    const token = generateJWT(res, user);
+    const token = generateJWT(res, user._id);
 
     user = { ...user._doc, password: undefined };
 
@@ -87,9 +88,25 @@ export const logout = async (req, res) => {
 
 export const checkAuth = async (req, res) => {
   try {
-    let user = req.user;
+    // * Get user from request
+    const userId = req?.userId;
 
-    user = { ...user, password: undefined };
+    // ! Check cache for user
+    if (memoryCache.has(userId)) {
+      const userCache = memoryCache.get(userId);
+
+      return res.status(200).json({
+        success: true,
+        user: userCache,
+        message: "User is authenticated",
+      });
+    }
+
+    // ? Fetch user Data
+    const user = await User.findById(userId).select("-password");
+
+    // ! Set cache for user
+    memoryCache.set(userId, user);
 
     return res.status(200).json({
       success: true,

@@ -6,6 +6,6 @@ import { getChatUsers, uploadProfile } from "../controllers/user.controller.js";
 const router = express.Router();
 
 router.get("/chat/:id", getChatUsers);
-router.post("/upload/:id", upload.single("imageFile"), uploadProfile);
+router.post("/upload/:id", upload.single("profilePic"), uploadProfile);
 
 export default router;

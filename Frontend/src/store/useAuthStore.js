@@ -10,6 +10,9 @@ const useAuthStore = create((set) => ({
   user: null,
   isAuthenticated: false,
 
+  // * Profile Data
+  isImageUploading: false,
+
   isLoading: false,
   error: null,
 
@@ -84,6 +87,29 @@ const useAuthStore = create((set) => ({
       set({ error: error.message, user: null, isAuthenticated: false });
     } finally {
       set({ isCheckingAuth: false });
+    }
+  },
+
+  uploadProfile: async ({ id, formData }) => {
+    set({ isImageUploading: true });
+
+    try {
+      const response = await axiosInstance.post(
+        `/api/user/upload/${encodeURIComponent(id)}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      if (response.data.success) {
+        set({ user: response.data.user });
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      set({ isImageUploading: false });
     }
   },
 }));
