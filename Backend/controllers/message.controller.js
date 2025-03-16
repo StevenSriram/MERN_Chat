@@ -49,11 +49,15 @@ export const sendMessage = async (req, res) => {
     let imageURL = null;
     if (image) {
       const b64 = Buffer.from(req.file?.buffer).toString("base64");
-      const url = `data:image/${req.file?.mimetype};base64,${b64}`;
 
       // ! Upload to Cloudinary
+      const url = `data:${req.file?.mimetype};base64,${b64}`;
       const uploadResponse = await uploadCloudinary(url);
-      imageURL = uploadResponse?.secure_url;
+
+      if (!uploadResponse || !uploadResponse.secure_url) {
+        return res.status(500).json({ message: "Image upload failed" });
+      }
+      imageURL = uploadResponse.secure_url;
     }
 
     const message = new Message({

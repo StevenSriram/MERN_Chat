@@ -6,7 +6,10 @@ import AuthImagePattern from "./custom/AuthImagePattern";
 
 import SideBar from "./ui/SideBar";
 import WelcomeContainer from "./ui/WelcomeContainer";
+
 import ChatContainer from "./ui/ChatContainer";
+import ChatHeader from "./ui/ChatHeader";
+import ChatInput from "./ui/ChatInput";
 
 import MessageSkeleton from "./custom/MessageSkeleton";
 import UserSkeleton from "./custom/UserSkeleton";
@@ -19,6 +22,8 @@ export {
   SideBar,
   WelcomeContainer,
   ChatContainer,
+  ChatHeader,
+  ChatInput,
   MessageSkeleton,
   UserSkeleton,
 };

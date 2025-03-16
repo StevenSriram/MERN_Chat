@@ -3,7 +3,7 @@ import axiosInstance from "../utils/axios.js";
 
 import { toast } from "react-hot-toast";
 
-const useChatStore = create((set) => ({
+const useChatStore = create((set, get) => ({
   // * chat Users
   chatUsers: [],
   selectedUser: null,
@@ -50,6 +50,22 @@ const useChatStore = create((set) => ({
       toast.error(error.message);
     } finally {
       set({ isMessagesLoading: false });
+    }
+  },
+
+  sendMessage: async (from, to, messageData) => {
+    try {
+      const response = await axiosInstance.post(
+        `/api/message/send/${encodeURIComponent(from)}/${encodeURIComponent(
+          to
+        )}`,
+        messageData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+    } catch (error) {
+      toast.error(error.message);
     }
   },
 }));
