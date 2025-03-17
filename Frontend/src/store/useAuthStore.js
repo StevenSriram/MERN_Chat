@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import axiosInstance from "../utils/axios.js";
 
+import useChatStore from "./useChatStore.js";
+import useSocketStore from "./useSocketStore.js";
+
 import toast from "react-hot-toast";
 
 const useAuthStore = create((set) => ({
@@ -19,6 +22,7 @@ const useAuthStore = create((set) => ({
   signUp: async (data) => {
     set({ isLoading: true });
 
+    const { connectSocket } = useSocketStore.getState();
     try {
       const response = await axiosInstance.post("/api/auth/signup", data);
 
@@ -28,6 +32,9 @@ const useAuthStore = create((set) => ({
         error: null,
       });
       toast.success(response.data.message);
+
+      // ! Connect Socket - Sign Up
+      connectSocket();
     } catch (error) {
       set({ error: error.message, user: null, isAuthenticated: false });
       toast.error(error.message);
@@ -39,6 +46,7 @@ const useAuthStore = create((set) => ({
   login: async (data) => {
     set({ isLoading: true });
 
+    const { connectSocket } = useSocketStore.getState();
     try {
       const response = await axiosInstance.post("/api/auth/login", data);
 
@@ -48,6 +56,9 @@ const useAuthStore = create((set) => ({
         error: null,
       });
       toast.success(response.data.message);
+
+      // ! Connect Socket - Login
+      connectSocket();
     } catch (error) {
       set({ error: error.message, user: null, isAuthenticated: false });
       toast.error(error.message);
@@ -59,15 +70,22 @@ const useAuthStore = create((set) => ({
   logout: async () => {
     set({ isLoading: true });
 
+    const { disconnectSocket } = useSocketStore.getState();
     try {
       const response = await axiosInstance.post("/api/auth/logout");
 
       set({ user: null, isAuthenticated: false, error: null });
       toast.success(response.data.message);
+
+      // ! Disconnect Socket - Logout
+      disconnectSocket();
     } catch (error) {
       set({ error: error.message, user: null, isAuthenticated: false });
       toast.error(error.message);
     } finally {
+      const { clearSelectedUser } = useChatStore.getState();
+      clearSelectedUser();
+
       set({ isLoading: false });
     }
   },
@@ -75,6 +93,7 @@ const useAuthStore = create((set) => ({
   checkAuth: async () => {
     set({ isCheckingAuth: true });
 
+    const { connectSocket } = useSocketStore.getState();
     try {
       const response = await axiosInstance.get("/api/auth/check-auth");
 
@@ -83,6 +102,9 @@ const useAuthStore = create((set) => ({
         isAuthenticated: response.data.success,
         error: null,
       });
+
+      // ! Connect Socket - Authentication
+      connectSocket();
     } catch (error) {
       set({ error: error.message, user: null, isAuthenticated: false });
     } finally {

@@ -1,3 +1,4 @@
+import express from "express";
 import { app, server } from "./socket/index.js";
 
 import { configEnv, configMorgan, configHelmet } from "../config.js";

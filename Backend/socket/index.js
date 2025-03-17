@@ -1,4 +1,4 @@
-import { configEnv } from "../config.js";
+import { configEnv } from "../../config.js";
 configEnv();
 
 import { Server } from "socket.io";
@@ -14,6 +14,14 @@ const io = new Server(server, {
     origin: process.env.CLIENT_URL,
     methods: ["GET", "POST"],
   },
+});
+
+io.on("connection", (socket) => {
+  console.log(`User Connected: ${socket.id}`);
+
+  socket.on("disconnect", () => {
+    console.log(`User Disconnected: ${socket.id}`);
+  });
 });
 
 export { app, server };

@@ -21,6 +21,10 @@ const useChatStore = create((set, get) => ({
     set({ selectedUser: user });
   },
 
+  clearSelectedUser: () => {
+    set({ selectedUser: null });
+  },
+
   getChatUsers: async (id) => {
     set({ isUsersLoading: true });
 
