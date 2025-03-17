@@ -1,4 +1,5 @@
-import express from "express";
+import { app, server } from "./socket/index.js";
+
 import { configEnv, configMorgan, configHelmet } from "../config.js";
 configEnv();
 
@@ -11,7 +12,6 @@ import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import messageRoutes from "./routes/message.routes.js";
 
-const app = express();
 const port = process.env.PORT || 3000;
 
 // * Middlewares
@@ -32,7 +32,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/message", messageRoutes);
 
-app.listen(port, () => {
+server.listen(port, () => {
   connectDB();
   console.log(`Server Running : http://localhost:${port}`);
 });
