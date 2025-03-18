@@ -1,11 +1,13 @@
 import React from "react";
 
 import useChatStore from "../../store/useChatStore";
+import useSocketStore from "../../store/useSocketStore";
 
 import { X } from "lucide-react";
 
 const ChatHeader = () => {
-  const { selectedUser, setSelectedUser, onlineUsers } = useChatStore();
+  const { selectedUser, setSelectedUser } = useChatStore();
+  const { onlineUsers } = useSocketStore();
 
   return (
     <div className="p-2.5 border-b border-base-300">

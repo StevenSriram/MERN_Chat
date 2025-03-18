@@ -9,9 +9,6 @@ const useChatStore = create((set, get) => ({
   selectedUser: null,
   isUsersLoading: false,
 
-  // * Online Users
-  onlineUsers: [],
-
   // * Messages
   messages: [],
   isMessagesLoading: false,

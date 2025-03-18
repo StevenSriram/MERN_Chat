@@ -5,17 +5,18 @@ import { UserSkeleton } from "..";
 
 import useChatStore from "../../store/useChatStore";
 import useAuthStore from "../../store/useAuthStore";
+import useSocketStore from "../../store/useSocketStore";
 
 const Sidebar = () => {
   const {
     getChatUsers,
     chatUsers,
-    onlineUsers,
     selectedUser,
     setSelectedUser,
     isUsersLoading,
   } = useChatStore();
 
+  const { onlineUsers } = useSocketStore();
   const { user } = useAuthStore();
 
   useEffect(() => {

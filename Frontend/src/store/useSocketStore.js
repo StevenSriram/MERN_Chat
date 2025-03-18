@@ -8,8 +8,11 @@ const API_URL = "http://localhost:5000";
 const useSocketStore = create((set, get) => ({
   socket: null,
 
+  // * Online Users
+  onlineUsers: [],
+
   connectSocket: () => {
-    const { isAuthenticated } = useAuthStore.getState();
+    const { user, isAuthenticated } = useAuthStore.getState();
     const { socket } = get();
 
     // ? Check Authenticated and Socket Connected
@@ -18,10 +21,20 @@ const useSocketStore = create((set, get) => ({
     }
 
     // ! Connect to Server Socket
-    const newSocket = io(API_URL);
+    const newSocket = io(API_URL, {
+      query: {
+        userId: user._id,
+      },
+    });
     newSocket.connect();
 
     set({ socket: newSocket });
+
+    newSocket.on("getOnlineUsers", (userIds) => {
+      console.log(userIds);
+
+      set({ onlineUsers: userIds });
+    });
   },
 
   disconnectSocket: () => {
