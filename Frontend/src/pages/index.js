@@ -1,7 +1,18 @@
-import HomePage from "./HomePage";
-import SignUpPage from "./SignUpPage";
-import LoginPage from "./LoginPage";
-import SettingsPage from "./SettingsPage";
-import ProfilePage from "./ProfilePage";
+import { lazy } from "react";
 
-export { HomePage, SignUpPage, LoginPage, SettingsPage, ProfilePage };
+const HomePage = lazy(() => import("./HomePage"));
+const SignUpPage = lazy(() => import("./SignUpPage"));
+const LoginPage = lazy(() => import("./LoginPage"));
+const SettingsPage = lazy(() => import("./SettingsPage"));
+const ProfilePage = lazy(() => import("./ProfilePage"));
+
+const NotFoundPage = lazy(() => import("./NotFoundPage"));
+
+export {
+  HomePage,
+  SignUpPage,
+  LoginPage,
+  SettingsPage,
+  ProfilePage,
+  NotFoundPage,
+};

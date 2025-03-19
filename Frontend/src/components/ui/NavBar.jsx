@@ -2,11 +2,13 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import useAuthStore from "../../store/useAuthStore";
+import useChatStore from "../../store/useChatStore";
 
 import { LogOut, MessageSquare, Settings, User } from "lucide-react";
 
 const Navbar = () => {
   const { logout, isAuthenticated } = useAuthStore();
+  const { clearSelectedUser } = useChatStore();
 
   const navigate = useNavigate();
 
@@ -26,6 +28,7 @@ const Navbar = () => {
             <Link
               to="/"
               className="flex items-center gap-2.5 hover:opacity-80 transition-all"
+              onClick={() => clearSelectedUser()}
             >
               <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                 <MessageSquare className="w-5 h-5 text-primary" />

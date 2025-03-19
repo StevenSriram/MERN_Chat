@@ -1,18 +1,20 @@
-import NavBar from "./ui/NavBar";
-import DotLoader from "./custom/DotLoader";
+import { lazy } from "react";
 
-import Authorization from "./custom/Authorization";
-import AuthImagePattern from "./custom/AuthImagePattern";
+const NavBar = lazy(() => import("./ui/NavBar"));
+const DotLoader = lazy(() => import("./custom/DotLoader"));
 
-import SideBar from "./ui/SideBar";
-import WelcomeContainer from "./ui/WelcomeContainer";
+const Authorization = lazy(() => import("./custom/Authorization"));
+const AuthImagePattern = lazy(() => import("./custom/AuthImagePattern"));
 
-import ChatContainer from "./ui/ChatContainer";
-import ChatHeader from "./ui/ChatHeader";
-import ChatInput from "./ui/ChatInput";
+const SideBar = lazy(() => import("./ui/SideBar"));
+const WelcomeContainer = lazy(() => import("./ui/WelcomeContainer"));
 
-import MessageSkeleton from "./custom/MessageSkeleton";
-import UserSkeleton from "./custom/UserSkeleton";
+const ChatContainer = lazy(() => import("./ui/ChatContainer"));
+const ChatHeader = lazy(() => import("./ui/ChatHeader"));
+const ChatInput = lazy(() => import("./ui/ChatInput"));
+
+const MessageSkeleton = lazy(() => import("./custom/MessageSkeleton"));
+const UserSkeleton = lazy(() => import("./custom/UserSkeleton"));
 
 export {
   NavBar,

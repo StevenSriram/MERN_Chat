@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import { NavBar, DotLoader, Authorization } from "./components";
@@ -8,6 +8,7 @@ import {
   LoginPage,
   SettingsPage,
   ProfilePage,
+  NotFoundPage,
 } from "./pages";
 import { Toaster } from "react-hot-toast";
 
@@ -34,50 +35,54 @@ const App = () => {
     <main className="min-h-screen overflow-auto" data-theme={theme}>
       <NavBar />
 
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Authorization>
-              <HomePage />
-            </Authorization>
-          }
-        />
+      <Suspense fallback={<DotLoader />}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Authorization>
+                <HomePage />
+              </Authorization>
+            }
+          />
 
-        <Route
-          path="/signup"
-          element={
-            <Authorization>
-              <SignUpPage />
-            </Authorization>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <Authorization>
-              <LoginPage />
-            </Authorization>
-          }
-        />
+          <Route
+            path="/signup"
+            element={
+              <Authorization>
+                <SignUpPage />
+              </Authorization>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <Authorization>
+                <LoginPage />
+              </Authorization>
+            }
+          />
 
-        <Route
-          path="/settings"
-          element={
-            <Authorization>
-              <SettingsPage />
-            </Authorization>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <Authorization>
-              <ProfilePage />
-            </Authorization>
-          }
-        />
-      </Routes>
+          <Route
+            path="/settings"
+            element={
+              <Authorization>
+                <SettingsPage />
+              </Authorization>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <Authorization>
+                <ProfilePage />
+              </Authorization>
+            }
+          />
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
 
       <Toaster />
     </main>
