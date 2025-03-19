@@ -7,13 +7,37 @@ import { MessageSkeleton, ChatHeader, ChatInput } from "..";
 import { formatMessageTime } from "../../utils/formatDate";
 
 const ChatContainer = () => {
-  const { messages, isMessagesLoading, getMessages, selectedUser } =
-    useChatStore();
+  const {
+    messages,
+    isMessagesLoading,
+    getMessages,
+    selectedUser,
+    subscribeToMessages,
+    unSubscribeFromMessages,
+    addMessage,
+  } = useChatStore();
   const { user } = useAuthStore();
 
   useEffect(() => {
-    getMessages(user._id, selectedUser._id);
-  }, [selectedUser, getMessages]);
+    // * Fetch messages when the selected user changes
+    if (selectedUser) {
+      getMessages(user._id, selectedUser._id);
+    }
+
+    // ? check and update new Messages
+    subscribeToMessages();
+
+    // ? clean up - off connection
+    return () => unSubscribeFromMessages();
+  }, [
+    selectedUser,
+    getMessages,
+    subscribeToMessages,
+    unSubscribeFromMessages,
+    addMessage,
+  ]);
+
+  console.log("Message", messages);
 
   if (isMessagesLoading) {
     return (

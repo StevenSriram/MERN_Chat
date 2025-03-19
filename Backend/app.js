@@ -24,7 +24,7 @@ app.use(
   })
 );
 app.use(configHelmet());
-app.use(configMorgan());
+// ? app.use(configMorgan());
 app.use(express.json());
 app.use(cookieParser());
 

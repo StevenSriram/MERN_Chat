@@ -21,6 +21,15 @@ const userSocketMap = {
   /* userId : socketId */
 };
 
+// ? Emit message to specific user
+const emitMessageToUser = (userId, message) => {
+  const socketId = userSocketMap[userId];
+
+  if (socketId) {
+    io.to(socketId).emit("newMessage", message);
+  }
+};
+
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
 
@@ -43,4 +52,4 @@ io.on("connection", (socket) => {
   });
 });
 
-export { app, server };
+export { app, server, emitMessageToUser };

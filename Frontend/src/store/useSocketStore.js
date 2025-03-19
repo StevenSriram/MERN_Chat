@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { io } from "socket.io-client";
 
 import useAuthStore from "./useAuthStore.js";
+import useChatStore from "./useChatStore.js";
 
 const API_URL = "http://localhost:5000";
 
@@ -30,9 +31,8 @@ const useSocketStore = create((set, get) => ({
 
     set({ socket: newSocket });
 
+    // ? Listen to Online Users
     newSocket.on("getOnlineUsers", (userIds) => {
-      console.log(userIds);
-
       set({ onlineUsers: userIds });
     });
   },

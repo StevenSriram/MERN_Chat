@@ -3,6 +3,8 @@ import Message from "../modals/message.modal.js";
 import memoryCache, { generateCacheKey } from "../utils/nodeCache.js";
 import { uploadCloudinary } from "../utils/cloudinary.js";
 
+import { emitMessageToUser } from "../socket/index.js";
+
 export const getMessages = async (req, res) => {
   const { from, to } = req.params;
 
@@ -68,7 +70,11 @@ export const sendMessage = async (req, res) => {
     });
 
     // ! Save message
-    await message.save();
+    const savedMessage = await message.save();
+
+    // ? Emit new message to Receiver, Sender
+    emitMessageToUser(to, savedMessage._doc);
+    emitMessageToUser(from, savedMessage._doc);
 
     const fromToKey = generateCacheKey("messages", `${from}-${to}`);
     const toFromKey = generateCacheKey("messages", `${to}-${from}`);

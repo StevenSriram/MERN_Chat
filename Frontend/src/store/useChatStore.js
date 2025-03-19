@@ -3,6 +3,8 @@ import axiosInstance from "../utils/axios.js";
 
 import { toast } from "react-hot-toast";
 
+import useSocketStore from "./useSocketStore.js";
+
 const useChatStore = create((set, get) => ({
   // * chat Users
   chatUsers: [],
@@ -13,13 +15,18 @@ const useChatStore = create((set, get) => ({
   messages: [],
   isMessagesLoading: false,
 
-  // ! Actions : need to Optimize
   setSelectedUser: (user) => {
     set({ selectedUser: user });
   },
 
   clearSelectedUser: () => {
     set({ selectedUser: null });
+  },
+
+  addMessage: (msg) => {
+    set((state) => ({
+      messages: [...state.messages, msg],
+    }));
   },
 
   getChatUsers: async (id) => {
@@ -68,6 +75,37 @@ const useChatStore = create((set, get) => ({
     } catch (error) {
       toast.error(error.message);
     }
+  },
+
+  // * listen to new Messages
+  subscribeToMessages: () => {
+    const { selectedUser, addMessage, messages } = get();
+    const { socket } = useSocketStore.getState();
+
+    if (!selectedUser) return;
+
+    // ? Update Messages
+    socket.on("newMessage", (msg) => {
+      console.log("New Message", msg);
+      console.log("Selected User", selectedUser);
+      console.log("Messages", messages);
+
+      // ! Check sender or receiver
+      if (
+        msg.sender === selectedUser._id ||
+        msg.receiver === selectedUser._id
+      ) {
+        addMessage(msg);
+      }
+    });
+  },
+
+  // * stop listening from Messages
+  unSubscribeFromMessages: () => {
+    const { socket } = useSocketStore.getState();
+
+    // ? Stop new Message
+    socket.off("newMessage");
   },
 }));
 
