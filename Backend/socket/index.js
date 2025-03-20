@@ -3,7 +3,6 @@ configEnv();
 
 import { Server } from "socket.io";
 import http from "http";
-
 import express from "express";
 
 const app = express();
@@ -16,14 +15,12 @@ const io = new Server(server, {
   },
 });
 
-// ? stores Online Users
-const userSocketMap = {
-  /* userId : socketId */
-};
+// ? stores Online Users { userId => socketId }
+const userSocketMap = new Map();
 
 // ? Emit message to specific user
 const emitMessageToUser = (userId, message) => {
-  const socketId = userSocketMap[userId];
+  const socketId = userSocketMap.get(userId);
 
   if (socketId) {
     io.to(socketId).emit("newMessage", message);
@@ -36,19 +33,19 @@ io.on("connection", (socket) => {
   // ? Get userId from query params
   const userId = socket.handshake.query.userId;
   if (userId) {
-    userSocketMap[userId] = socket.id;
+    userSocketMap.set(userId, socket.id);
   }
 
   // * Send Online Users to all connected clients
-  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  io.emit("getOnlineUsers", [...userSocketMap.keys()]);
 
   socket.on("disconnect", () => {
     console.log(`User Disconnected: ${socket.id}`);
 
     // ? Remove user from userSocketMap
-    delete userSocketMap[userId];
+    userSocketMap.delete(userId);
 
-    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+    io.emit("getOnlineUsers", [...userSocketMap.keys()]);
   });
 });
 

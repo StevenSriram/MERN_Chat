@@ -9,8 +9,8 @@ const API_URL = "http://localhost:5000";
 const useSocketStore = create((set, get) => ({
   socket: null,
 
-  // * Online Users
-  onlineUsers: [],
+  // * Online Users - Set for Optimization
+  onlineUsers: new Set(),
 
   connectSocket: () => {
     const { user, isAuthenticated } = useAuthStore.getState();
@@ -33,7 +33,7 @@ const useSocketStore = create((set, get) => ({
 
     // ? Listen to Online Users
     newSocket.on("getOnlineUsers", (userIds) => {
-      set({ onlineUsers: userIds });
+      set({ onlineUsers: new Set(userIds) });
     });
   },
 

@@ -1,6 +1,7 @@
 import React from "react";
-import { MessageCircleWarning } from "lucide-react";
 import { Link } from "react-router-dom";
+
+import { MessageCircleWarning } from "lucide-react";
 
 const NotFoundPage = () => {
   return (

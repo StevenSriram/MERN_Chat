@@ -30,14 +30,24 @@ const useChatStore = create((set, get) => ({
   },
 
   getChatUsers: async (id) => {
-    set({ isUsersLoading: true });
+    const { onlineUsers } = useSocketStore.getState();
 
+    set({ isUsersLoading: true });
     try {
       const response = await axiosInstance.get(
         `/api/user/chat/${encodeURIComponent(id)}`
       );
 
-      set({ chatUsers: response.data.users });
+      const usersToChat = response.data.users;
+      // ! Sort users by Online Status
+      const sortedUsers = usersToChat.sort((a, b) => {
+        const aHas = onlineUsers.has(a._id);
+        const bHas = onlineUsers.has(b._id);
+
+        return bHas - aHas;
+      });
+
+      set({ chatUsers: sortedUsers });
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -86,10 +96,6 @@ const useChatStore = create((set, get) => ({
 
     // ? Update Messages
     socket.on("newMessage", (msg) => {
-      console.log("New Message", msg);
-      console.log("Selected User", selectedUser);
-      console.log("Messages", messages);
-
       // ! Check sender or receiver
       if (
         msg.sender === selectedUser._id ||
