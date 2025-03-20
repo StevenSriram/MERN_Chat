@@ -49,7 +49,7 @@ const useChatStore = create((set, get) => ({
 
       set({ chatUsers: sortedUsers });
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error?.response.data.message);
     } finally {
       set({ isUsersLoading: false });
     }
@@ -65,7 +65,7 @@ const useChatStore = create((set, get) => ({
 
       set({ messages: response.data.messages });
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error?.response.data.message);
     } finally {
       set({ isMessagesLoading: false });
     }
@@ -83,7 +83,7 @@ const useChatStore = create((set, get) => ({
         }
       );
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error?.response.data.message);
     }
   },
 

@@ -2,9 +2,9 @@ import { create } from "zustand";
 import { io } from "socket.io-client";
 
 import useAuthStore from "./useAuthStore.js";
-import useChatStore from "./useChatStore.js";
 
-const API_URL = "http://localhost:5000";
+const API_URL =
+  import.meta.env.MODE === "production" ? "" : "http://localhost:5000";
 
 const useSocketStore = create((set, get) => ({
   socket: null,

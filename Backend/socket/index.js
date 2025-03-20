@@ -28,8 +28,6 @@ const emitMessageToUser = (userId, message) => {
 };
 
 io.on("connection", (socket) => {
-  console.log(`User Connected: ${socket.id}`);
-
   // ? Get userId from query params
   const userId = socket.handshake.query.userId;
   if (userId) {
@@ -40,8 +38,6 @@ io.on("connection", (socket) => {
   io.emit("getOnlineUsers", [...userSocketMap.keys()]);
 
   socket.on("disconnect", () => {
-    console.log(`User Disconnected: ${socket.id}`);
-
     // ? Remove user from userSocketMap
     userSocketMap.delete(userId);
 
@@ -50,3 +46,9 @@ io.on("connection", (socket) => {
 });
 
 export { app, server, emitMessageToUser };
+
+/*
+  console.log(`User Connected: ${socket.id}`);
+  
+  console.log(`User Disconnected: ${socket.id}`);
+*/

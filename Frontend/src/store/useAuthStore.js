@@ -36,8 +36,12 @@ const useAuthStore = create((set) => ({
       // ! Connect Socket - Sign Up
       connectSocket();
     } catch (error) {
-      set({ error: error.message, user: null, isAuthenticated: false });
-      toast.error(error.message);
+      set({
+        error: error?.response.data.message,
+        user: null,
+        isAuthenticated: false,
+      });
+      toast.error(error?.response.data.message);
     } finally {
       set({ isLoading: false });
     }
@@ -60,8 +64,12 @@ const useAuthStore = create((set) => ({
       // ! Connect Socket - Login
       connectSocket();
     } catch (error) {
-      set({ error: error.message, user: null, isAuthenticated: false });
-      toast.error(error.message);
+      set({
+        error: error?.response.data.message,
+        user: null,
+        isAuthenticated: false,
+      });
+      toast.error(error?.response.data.message);
     } finally {
       set({ isLoading: false });
     }
@@ -80,8 +88,12 @@ const useAuthStore = create((set) => ({
       // ! Disconnect Socket - Logout
       disconnectSocket();
     } catch (error) {
-      set({ error: error.message, user: null, isAuthenticated: false });
-      toast.error(error.message);
+      set({
+        error: error?.response.data.message,
+        user: null,
+        isAuthenticated: false,
+      });
+      toast.error(error?.response.data.message);
     } finally {
       const { clearSelectedUser } = useChatStore.getState();
       clearSelectedUser();
@@ -106,7 +118,11 @@ const useAuthStore = create((set) => ({
       // ! Connect Socket - Authentication
       connectSocket();
     } catch (error) {
-      set({ error: error.message, user: null, isAuthenticated: false });
+      set({
+        error: error?.response.data.message,
+        user: null,
+        isAuthenticated: false,
+      });
     } finally {
       set({ isCheckingAuth: false });
     }
@@ -129,7 +145,7 @@ const useAuthStore = create((set) => ({
         toast.success(response.data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error?.response.data.message);
     } finally {
       set({ isImageUploading: false });
     }
